@@ -1,15 +1,22 @@
+import { FC, PropsWithChildren, useEffect, useRef } from "react";
+import Image from "next/image";
+
+import woman from "./../../../../public/woman.jpg";
+
 import styles from "./MerryGoRound.module.scss";
-import { useEffect, useRef } from "react";
+import MerryGoRoundItem from "./MerryGoRoundItem";
+
+type ICoordinate = Array<{
+  x: number;
+  y: number;
+}>;
 
 type TCalculateCoordinate = (
   count: number,
   r: number,
   cx?: number,
   cy?: number,
-) => Array<{
-  x: number;
-  y: number;
-}>;
+) => ICoordinate;
 
 const calculateCoordinate: TCalculateCoordinate = (
   count,
@@ -34,34 +41,38 @@ const calculateCoordinate: TCalculateCoordinate = (
   }
   return sectors;
 };
-const MerryGoRound = () => {
+const MerryGoRound: FC<PropsWithChildren> = ({ children }) => {
   const ref = useRef(null);
 
   useEffect(() => {
-    const coordinates = calculateCoordinate(6, 100);
+    let coordinates: ICoordinate;
+
+    if (Array.isArray(children)) {
+      coordinates = calculateCoordinate(children?.length, 315, 315, 315);
+    }
 
     // @ts-ignore
     const items: Array<HTMLElement> = ref.current?.childNodes;
     items.forEach((item, index) => {
-      item.style.height = "20px";
-      item.style.width = "20px";
-      item.style.position = "absolute";
-      item.style.backgroundColor = "blue";
       item.style.transform = "translate(-50%, 50%)";
       item.style.left = `${coordinates[index]?.x}px`;
       item.style.bottom = `${coordinates[index]?.y}px`;
     });
-  }, [ref.current]);
+  }, [ref.current, children]);
   return (
     <div className={styles.merryGoRound}>
-      <div className={styles.center} />
+      <div className={styles.center}>
+        <h5 className={styles.title}>Взрослый</h5>
+        <Image
+          height={350}
+          width={350}
+          layout={"fixed"}
+          src={woman}
+          placeholder="blur"
+        />
+      </div>
       <ul ref={ref} className={styles.items}>
-        <li className={styles.item} />
-        <li className={styles.item} />
-        <li className={styles.item} />
-        <li className={styles.item} />
-        <li className={styles.item} />
-        <li className={styles.item} />
+        {children}
       </ul>
     </div>
   );

@@ -1,10 +1,18 @@
-import Image from "next/image";
-import image from "../../../../public/image.png";
+import Image, { StaticImageData } from "next/image";
 
-const Patient = () => {
+import styles from "./Patient.module.scss";
+import { FC } from "react";
+
+interface IPatient {
+  infoArray: string[];
+  title: string;
+  image: StaticImageData;
+}
+
+const Patient: FC<IPatient> = ({ infoArray, image, title }) => {
   return (
-    <div className="patient">
-      <p className={"title"}>Взрослый</p>
+    <div className={styles.patient}>
+      <p className={styles.title}>{title}</p>
       <Image
         height={300}
         width={300}
@@ -12,19 +20,11 @@ const Patient = () => {
         src={image}
         placeholder="blur"
       />
-      <p>
-        Менее тяжелые формы СМА могут возникать и диагностироваться в зрелом
-        возрасте.
-      </p>
-      <p>
-        По сравнению с СМА у детей, СМА у взрослых может иметь более легкие
-        симптомы, но без патогенетической терапии пациенты со СМА 2-3 типа
-        неуклонно теряют двигательные навыки.
-      </p>
-      <p>
-        По сравнению с СМА в детстве, течение СМА у взрослых может быть более
-        коварным и трудным для распознавания.
-      </p>
+      {infoArray?.map((i, index) => (
+        <p key={i + index} className={styles.info}>
+          {i}
+        </p>
+      ))}
     </div>
   );
 };
